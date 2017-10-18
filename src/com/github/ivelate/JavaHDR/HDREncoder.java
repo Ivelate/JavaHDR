@@ -167,8 +167,8 @@ public class HDREncoder
 		byte[] bdata=new byte[img.getWidth()*img.getHeight()*(rgb?4:2)];
 		
 		//Get RGBE from data[] values and parse it into bdata. Only RE components are needed as R=G=B in non-rgb images
-		if(rgb) for(int s=0;s<img.getInternalData().length;s+=img.getWidth()) for(int i=0;i<img.getWidth();i++) RGBE.float2re(bdata, img.getInternalData()[i+s], i +s*2, img.getWidth()); 
-		else for(int s=0;s<img.getInternalData().length;s+=img.getWidth()) for(int i=0;i<img.getWidth();i++) RGBE.float2rgbe(bdata, img.getInternalData()[i+s], i +s*4, img.getWidth()); 
+		if(!rgb) for(int s=0;s<img.getInternalData().length;s+=img.getWidth()) for(int i=0;i<img.getWidth();i++) RGBE.float2re(bdata, img.getInternalData()[i+s], i +s*2, img.getWidth()); 
+		else for(int s=0;s<img.getInternalData().length;s+=img.getWidth()*3) for(int i=0;i<img.getWidth();i++) RGBE.float2rgbe(bdata, img.getInternalData()[i*3+s], img.getInternalData()[i*3+s+1], img.getInternalData()[i*3+s+2], i +(s/3)*4, img.getWidth());
 		
 		writeHDR(bdata,img.getWidth(),img.getHeight(),rgb,file);
 	}
@@ -259,6 +259,4 @@ public class HDREncoder
 	{
 		RGBE.float2rgbe(bdata, r,g,b, y*width*4+x, width); //Contiguous in the scanline
 	}
-	
-
 }
